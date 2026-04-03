@@ -1,29 +1,54 @@
 {
   "expo": {
-    "name": "kempaga-app",
+    "name": "Kempaga",
     "slug": "kempaga-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#08050e"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.kempaga.app",
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Autentique-se na Kempaga com Face ID",
+        "NSPhotoLibraryUsageDescription": "Selecione uma foto de perfil"
+      }
     },
     "android": {
+      "package": "com.kempaga.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#08050e"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "permissions": [
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-font",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Autentique-se na Kempaga com Face ID"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Selecione uma foto para o seu perfil"
+        }
+      ]
+    ]
   }
 }
