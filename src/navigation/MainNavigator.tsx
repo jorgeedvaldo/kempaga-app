@@ -21,6 +21,8 @@ import ProfileScreen from '@/screens/profile/ProfileScreen';
 import SendMoneyScreen from '@/screens/wallet/SendMoneyScreen';
 import TransactionDetailScreen from '@/screens/transactions/TransactionDetailScreen';
 import CreateRequestScreen from '@/screens/requests/CreateRequestScreen';
+import ReceivedRequestDetailScreen from '@/screens/requests/ReceivedRequestDetailScreen';
+import SentRequestDetailScreen from '@/screens/requests/SentRequestDetailScreen';
 import EditProfileScreen from '@/screens/profile/EditProfileScreen';
 import NotificationsScreen from '@/screens/notifications/NotificationsScreen';
 
@@ -29,6 +31,8 @@ export type MainStackParamList = {
   MainTabs: undefined;
   SendMoney: undefined;
   TransactionDetail: { transaction: import('@/types').Transaction };
+  ReceivedRequestDetail: { request: import('@/types').MoneyRequest };
+  SentRequestDetail: { request: import('@/types').MoneyRequest };
   CreateRequest: undefined;
   EditProfile: undefined;
   Notifications: undefined;
@@ -135,14 +139,16 @@ const MainNavigator: React.FC = () => {
         component={SendMoneyScreen}
         options={{ animation: 'slide_from_bottom' }}
       />
-      <Stack.Screen name="TransactionDetail" component={TransactionDetailScreen} />
-      <Stack.Screen
-        name="CreateRequest"
-        component={CreateRequestScreen}
-        options={{ animation: 'slide_from_bottom' }}
-      />
-      <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-      <Stack.Screen name="Notifications" component={NotificationsScreen} />
+      <Stack.Group
+        screenOptions={{ animation: 'slide_from_bottom' }}
+      >
+        <Stack.Screen name="TransactionDetail" component={TransactionDetailScreen} />
+        <Stack.Screen name="ReceivedRequestDetail" component={ReceivedRequestDetailScreen} />
+        <Stack.Screen name="SentRequestDetail" component={SentRequestDetailScreen} />
+        <Stack.Screen name="CreateRequest" component={CreateRequestScreen} />
+        <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+        <Stack.Screen name="Notifications" component={NotificationsScreen} />
+      </Stack.Group>
     </Stack.Navigator>
   );
 };

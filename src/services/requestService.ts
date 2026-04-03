@@ -37,9 +37,14 @@ export const requestService = {
    */
   async respondRequest(
     id: number,
-    status: 'accepted' | 'rejected'
+    status: 'accepted' | 'rejected',
+    rejection_note?: string
   ): Promise<{ message: string; money_request: MoneyRequest }> {
-    const { data } = await api.put(`/money-requests/${id}`, { status });
+    // AGENT.md instruiu o backend a receber a anotação sob o nome "note" no endpoint /respond
+    const { data } = await api.put(`/money-requests/${id}/respond`, { 
+      status, 
+      note: rejection_note 
+    });
     return data;
   },
 

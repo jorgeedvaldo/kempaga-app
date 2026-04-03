@@ -48,6 +48,6 @@ export const userService = {
    * Registar o token de notificações Push
    */
   async updateDeviceToken(token: string): Promise<void> {
-    await api.post('/user/device-token', { token });
+    await api.post('/users/device-token', { token });
   },
 };

@@ -11,6 +11,7 @@ import {
   ViewStyle,
   TextStyle,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useTheme, fontFamily, fontSize, borderRadius, spacing } from '@/theme';
 
 interface ButtonProps {
@@ -20,7 +21,7 @@ interface ButtonProps {
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
   disabled?: boolean;
-  icon?: React.ReactNode;
+  icon?: string | React.ReactNode;
   style?: ViewStyle;
   textStyle?: TextStyle;
   fullWidth?: boolean;
@@ -148,7 +149,15 @@ const Button: React.FC<ButtonProps> = ({
         />
       ) : (
         <>
-          {icon}
+          {typeof icon === 'string' ? (
+            <Ionicons
+              name={icon as keyof typeof Ionicons.glyphMap}
+              size={size === 'sm' ? 16 : size === 'md' ? 18 : 20}
+              color={getTextStyle().color as string}
+            />
+          ) : (
+            icon
+          )}
           <Text style={[getTextStyle(), textStyle]}>{title}</Text>
         </>
       )}

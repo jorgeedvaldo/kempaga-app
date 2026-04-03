@@ -88,28 +88,6 @@ const RequestsScreen: React.FC = () => {
     fetchRequests(1, true);
   }, [fetchRequests]);
 
-  const handleAccept = async (id: number) => {
-    Alert.alert('Aceitar Pedido', 'Deseja enviar o dinheiro solicitado agora?', [
-      { text: 'Cancelar', style: 'cancel' },
-      {
-        text: 'Sim, Pagar',
-        onPress: async () => {
-          setActionLoadingId(id);
-          try {
-            await requestService.respondRequest(id, 'accepted');
-            await refreshUser();
-            fetchRequests(1, true);
-            Alert.alert('Sucesso', 'Pedido aceite e transferência realizada!');
-          } catch (error) {
-            Alert.alert('Erro', getErrorMessage(error));
-          } finally {
-            setActionLoadingId(null);
-          }
-        },
-      },
-    ]);
-  };
-
   const openRejectModal = (id: number) => {
     setRequestToReject(id);
     setRejectNote('');
@@ -216,7 +194,13 @@ const RequestsScreen: React.FC = () => {
             <RequestItem
               request={item}
               currentUserId={user?.id || 0}
-              onAccept={() => handleAccept(item.id)}
+              onPress={() => {
+                if (activeTab === 'received') {
+                  navigation.navigate('ReceivedRequestDetail', { request: item });
+                } else {
+                  navigation.navigate('SentRequestDetail', { request: item });
+                }
+              }}
               onReject={() => openRejectModal(item.id)}
               onCancel={() => handleCancel(item.id)}
               loading={actionLoadingId === item.id}

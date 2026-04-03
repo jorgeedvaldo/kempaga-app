@@ -13,7 +13,7 @@ import Avatar from './Avatar';
 interface RequestItemProps {
   request: MoneyRequest;
   currentUserId: number;
-  onAccept?: () => void;
+  onPress?: () => void;
   onReject?: () => void;
   onCancel?: () => void;
   loading?: boolean;
@@ -22,7 +22,7 @@ interface RequestItemProps {
 const RequestItem: React.FC<RequestItemProps> = ({
   request,
   currentUserId,
-  onAccept,
+  onPress,
   onReject,
   onCancel,
   loading = false,
@@ -44,6 +44,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
       case 'accepted': return 'Aceite';
       case 'rejected': return 'Rejeitado';
       case 'cancelled': return 'Cancelado';
+      default: return request.status;
     }
   };
 
@@ -53,11 +54,14 @@ const RequestItem: React.FC<RequestItemProps> = ({
       case 'accepted': return colors.brandGreen;
       case 'rejected': return colors.danger;
       case 'cancelled': return colors.textMuted;
+      default: return colors.textMuted;
     }
   };
 
   return (
-    <View
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.7}
       style={[
         styles.container,
         { backgroundColor: colors.card, borderColor: colors.border },
@@ -113,29 +117,17 @@ const RequestItem: React.FC<RequestItemProps> = ({
           {loading ? (
             <ActivityIndicator size="small" color={colors.brandPurple} />
           ) : iAmReceiver ? (
-            // Eu sou quem deve pagar — posso aceitar ou rejeitar
-            <>
-              <TouchableOpacity
-                style={[styles.actionButton, styles.rejectButton, { borderColor: colors.danger }]}
-                onPress={onReject}
-                activeOpacity={0.7}
-              >
-                <Ionicons name="close" size={16} color={colors.danger} />
-                <Text style={[styles.actionText, { color: colors.danger, fontFamily: fontFamily.semiBold }]}>
-                  Rejeitar
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.actionButton, styles.acceptButton, { backgroundColor: colors.brandGreen }]}
-                onPress={onAccept}
-                activeOpacity={0.7}
-              >
-                <Ionicons name="checkmark" size={16} color="#fff" />
-                <Text style={[styles.actionText, { color: '#fff', fontFamily: fontFamily.semiBold }]}>
-                  Aceitar
-                </Text>
-              </TouchableOpacity>
-            </>
+            // Eu sou quem deve pagar — posso rejeitar localmente, ou clicar no pedido para aceitar
+            <TouchableOpacity
+              style={[styles.actionButton, styles.rejectButton, { borderColor: colors.danger }]}
+              onPress={onReject}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="close" size={16} color={colors.danger} />
+              <Text style={[styles.actionText, { color: colors.danger, fontFamily: fontFamily.semiBold }]}>
+                Rejeitar
+              </Text>
+            </TouchableOpacity>
           ) : (
             // Eu sou quem pediu — posso cancelar
             <TouchableOpacity
@@ -151,7 +143,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
           )}
         </View>
       )}
-    </View>
+    </TouchableOpacity>
   );
 };
 
