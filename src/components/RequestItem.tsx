@@ -31,7 +31,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
 
   // sender = quem pediu, receiver = quem deve pagar
   const iAmReceiver = request.receiver_id === currentUserId;
-  const otherPerson = iAmReceiver ? request.sender : request.receiver;
+  const otherPerson = request.sender?.id === currentUserId ? request.receiver : request.sender;
   const otherName = otherPerson
     ? `${otherPerson.first_name} ${otherPerson.last_name}`
     : 'Desconhecido';

@@ -22,14 +22,16 @@ import SendMoneyScreen from '@/screens/wallet/SendMoneyScreen';
 import TransactionDetailScreen from '@/screens/transactions/TransactionDetailScreen';
 import CreateRequestScreen from '@/screens/requests/CreateRequestScreen';
 import EditProfileScreen from '@/screens/profile/EditProfileScreen';
+import NotificationsScreen from '@/screens/notifications/NotificationsScreen';
 
 // ========== TYPES ==========
 export type MainStackParamList = {
   MainTabs: undefined;
   SendMoney: undefined;
-  TransactionDetail: { transactionId: number };
+  TransactionDetail: { transaction: import('@/types').Transaction };
   CreateRequest: undefined;
   EditProfile: undefined;
+  Notifications: undefined;
 };
 
 export type MainTabParamList = {
@@ -140,6 +142,7 @@ const MainNavigator: React.FC = () => {
         options={{ animation: 'slide_from_bottom' }}
       />
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+      <Stack.Screen name="Notifications" component={NotificationsScreen} />
     </Stack.Navigator>
   );
 };

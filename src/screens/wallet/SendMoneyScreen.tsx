@@ -18,7 +18,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme, fontFamily, fontSize, spacing, borderRadius } from '@/theme';
 import { userService } from '@/services/userService';
@@ -34,7 +35,9 @@ type Step = 'search' | 'amount' | 'confirm';
 const SendMoneyScreen: React.FC = () => {
   const { user, refreshUser } = useAuth();
   const { colors } = useTheme();
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
+  const route = useRoute<any>();
+  const insets = useSafeAreaInsets();
 
   const [step, setStep] = useState<Step>('search');
   const [query, setQuery] = useState('');
@@ -296,7 +299,7 @@ const SendMoneyScreen: React.FC = () => {
   return (
     <View style={[styles.screen, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <View style={[styles.screenHeader, { borderColor: colors.border }]}>
+      <View style={[styles.screenHeader, { borderColor: colors.border, paddingTop: Math.max(insets.top, spacing['5xl']) }]}>
         <TouchableOpacity
           onPress={() => {
             if (step === 'search') navigation.goBack();

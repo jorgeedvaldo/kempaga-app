@@ -16,6 +16,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme, fontFamily, fontSize, spacing, borderRadius } from '@/theme';
 import { userService } from '@/services/userService';
@@ -28,6 +29,7 @@ const EditProfileScreen: React.FC = () => {
   const { user, refreshUser } = useAuth();
   const { colors } = useTheme();
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
 
   const [firstName, setFirstName] = useState(user?.first_name || '');
   const [lastName, setLastName] = useState(user?.last_name || '');
@@ -96,7 +98,7 @@ const EditProfileScreen: React.FC = () => {
   return (
     <View style={[styles.screen, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <View style={[styles.header, { borderColor: colors.border }]}>
+      <View style={[styles.header, { borderColor: colors.border, paddingTop: Math.max(insets.top, spacing['5xl']) }]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
         </TouchableOpacity>

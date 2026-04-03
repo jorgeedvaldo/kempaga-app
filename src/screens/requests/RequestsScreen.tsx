@@ -10,6 +10,8 @@ import {
   TouchableOpacity,
   RefreshControl,
   Alert,
+  Modal,
+  TextInput,
   StyleSheet,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -21,6 +23,7 @@ import { getErrorMessage } from '@/utils/helpers';
 import RequestItem from '@/components/RequestItem';
 import { TransactionSkeleton } from '@/components/SkeletonLoader';
 import EmptyState from '@/components/EmptyState';
+import Button from '@/components/Button';
 import type { MoneyRequest, MoneyRequestFilters } from '@/types';
 
 const TABS = [
@@ -40,6 +43,11 @@ const RequestsScreen: React.FC = () => {
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
+
+  // Reject Modal State
+  const [rejectModalVisible, setRejectModalVisible] = useState(false);
+  const [requestToReject, setRequestToReject] = useState<number | null>(null);
+  const [rejectNote, setRejectNote] = useState('');
 
   const fetchRequests = useCallback(
     async (pageNum: number = 1, isRefresh: boolean = false) => {
@@ -81,30 +89,17 @@ const RequestsScreen: React.FC = () => {
   }, [fetchRequests]);
 
   const handleAccept = async (id: number) => {
-    setActionLoadingId(id);
-    try {
-      await requestService.respondRequest(id, 'accepted');
-      await refreshUser();
-      fetchRequests(1, true);
-      Alert.alert('Sucesso', 'Pedido aceite e pagamento processado!');
-    } catch (error) {
-      Alert.alert('Erro', getErrorMessage(error));
-    } finally {
-      setActionLoadingId(null);
-    }
-  };
-
-  const handleReject = async (id: number) => {
-    Alert.alert('Rejeitar Pedido', 'Tem certeza que quer rejeitar este pedido?', [
+    Alert.alert('Aceitar Pedido', 'Deseja enviar o dinheiro solicitado agora?', [
       { text: 'Cancelar', style: 'cancel' },
       {
-        text: 'Rejeitar',
-        style: 'destructive',
+        text: 'Sim, Pagar',
         onPress: async () => {
           setActionLoadingId(id);
           try {
-            await requestService.respondRequest(id, 'rejected');
+            await requestService.respondRequest(id, 'accepted');
+            await refreshUser();
             fetchRequests(1, true);
+            Alert.alert('Sucesso', 'Pedido aceite e transferência realizada!');
           } catch (error) {
             Alert.alert('Erro', getErrorMessage(error));
           } finally {
@@ -113,6 +108,29 @@ const RequestsScreen: React.FC = () => {
         },
       },
     ]);
+  };
+
+  const openRejectModal = (id: number) => {
+    setRequestToReject(id);
+    setRejectNote('');
+    setRejectModalVisible(true);
+  };
+
+  const confirmReject = async () => {
+    if (requestToReject === null) return;
+    
+    setRejectModalVisible(false);
+    setActionLoadingId(requestToReject);
+    try {
+      await requestService.respondRequest(requestToReject, 'rejected', rejectNote || undefined);
+      fetchRequests(1, true);
+      Alert.alert('Sucesso', 'Pedido rejeitado com sucesso.');
+    } catch (error) {
+      Alert.alert('Erro', getErrorMessage(error));
+    } finally {
+      setActionLoadingId(null);
+      setRequestToReject(null);
+    }
   };
 
   const handleCancel = async (id: number) => {
@@ -199,7 +217,7 @@ const RequestsScreen: React.FC = () => {
               request={item}
               currentUserId={user?.id || 0}
               onAccept={() => handleAccept(item.id)}
-              onReject={() => handleReject(item.id)}
+              onReject={() => openRejectModal(item.id)}
               onCancel={() => handleCancel(item.id)}
               loading={actionLoadingId === item.id}
             />
@@ -227,6 +245,55 @@ const RequestsScreen: React.FC = () => {
           }
         />
       )}
+
+      {/* Modal Rejeição */}
+      <Modal
+        visible={rejectModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setRejectModalVisible(false)}
+      >
+        <TouchableOpacity 
+          style={styles.modalOverlay} 
+          activeOpacity={1} 
+          onPress={() => setRejectModalVisible(false)}
+        >
+          <View style={[styles.modalContent, { backgroundColor: colors.card }]}>
+            <Text style={[styles.modalTitle, { color: colors.textPrimary, fontFamily: fontFamily.bold }]}>
+              Rejeitar Pedido
+            </Text>
+            <Text style={[styles.modalSubtitle, { color: colors.textMuted, fontFamily: fontFamily.regular }]}>
+              Quer deixar uma justificação opcional para a outra pessoa?
+            </Text>
+            
+            <TextInput
+              style={[styles.modalInput, { color: colors.textPrimary, borderColor: colors.border, fontFamily: fontFamily.medium }]}
+              placeholder="Ex: Já paguei ontem..."
+              placeholderTextColor={colors.textMuted}
+              value={rejectNote}
+              onChangeText={setRejectNote}
+              multiline
+            />
+            
+            <View style={styles.modalActions}>
+              <Button 
+                title="Cancelar" 
+                variant="ghost" 
+                onPress={() => setRejectModalVisible(false)} 
+                fullWidth={false}
+                style={{ flex: 1 }}
+              />
+              <Button 
+                title="Confirmar Rejeição" 
+                variant="danger" 
+                onPress={confirmReject} 
+                fullWidth={false}
+                style={{ flex: 1 }}
+              />
+            </View>
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 };
@@ -265,6 +332,44 @@ const styles = StyleSheet.create({
   list: {
     paddingHorizontal: spacing['2xl'],
     paddingBottom: spacing['6xl'],
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: spacing['2xl'],
+  },
+  modalContent: {
+    width: '100%',
+    padding: spacing['2xl'],
+    borderRadius: borderRadius['2xl'],
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.25,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  modalTitle: {
+    fontSize: fontSize.xl,
+    marginBottom: spacing.sm,
+  },
+  modalSubtitle: {
+    fontSize: fontSize.md,
+    marginBottom: spacing.lg,
+  },
+  modalInput: {
+    borderWidth: 1,
+    borderRadius: borderRadius.lg,
+    padding: spacing.md,
+    minHeight: 100,
+    textAlignVertical: 'top',
+    fontSize: fontSize.md,
+    marginBottom: spacing.xl,
+  },
+  modalActions: {
+    flexDirection: 'row',
+    gap: spacing.md,
   },
 });
 

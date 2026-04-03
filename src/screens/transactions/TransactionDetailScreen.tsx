@@ -13,9 +13,9 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme, fontFamily, fontSize, spacing, borderRadius } from '@/theme';
-import { transactionService } from '@/services/transactionService';
 import { formatCurrency, formatDate } from '@/utils/helpers';
 import Avatar from '@/components/Avatar';
 import type { Transaction } from '@/types';
@@ -25,33 +25,10 @@ const TransactionDetailScreen: React.FC = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
   const route = useRoute<any>();
+  const insets = useSafeAreaInsets();
 
-  const transactionId = route.params?.transactionId;
-
-  const [transaction, setTransaction] = useState<Transaction | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchDetail = async () => {
-      try {
-        const { transaction: tx } = await transactionService.getTransaction(transactionId);
-        setTransaction(tx);
-      } catch (error) {
-        console.warn('Erro ao carregar detalhes:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchDetail();
-  }, [transactionId]);
-
-  if (loading) {
-    return (
-      <View style={[styles.centered, { backgroundColor: colors.background }]}>
-        <ActivityIndicator size="large" color={colors.brandPurple} />
-      </View>
-    );
-  }
+  // Usar a transação enviada por parâmetros para ser instantâneo e evitar erros de API "Nao encontrada"
+  const transaction: Transaction = route.params?.transaction;
 
   if (!transaction) {
     return (
@@ -81,7 +58,7 @@ const TransactionDetailScreen: React.FC = () => {
   return (
     <View style={[styles.screen, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <View style={[styles.header, { borderColor: colors.border }]}>
+      <View style={[styles.header, { borderColor: colors.border, paddingTop: Math.max(insets.top, spacing['5xl']) }]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
         </TouchableOpacity>

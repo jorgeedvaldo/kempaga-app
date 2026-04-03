@@ -151,7 +151,7 @@ const TransactionsScreen: React.FC = () => {
               transaction={item}
               currentUserId={user?.id || 0}
               onPress={() =>
-                navigation.navigate('TransactionDetail', { transactionId: item.id })
+                navigation.navigate('TransactionDetail', { transaction: item })
               }
             />
           )}

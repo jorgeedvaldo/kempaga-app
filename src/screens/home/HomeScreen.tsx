@@ -18,6 +18,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useTheme, fontFamily, fontSize, spacing, borderRadius } from '@/theme';
 import { transactionService } from '@/services/transactionService';
 import { getGreeting } from '@/utils/helpers';
+import { usePushNotifications } from '@/hooks/usePushNotifications';
 import Avatar from '@/components/Avatar';
 import BalanceCard from '@/components/BalanceCard';
 import QuickActions from '@/components/QuickActions';
@@ -30,6 +31,9 @@ const HomeScreen: React.FC = () => {
   const { user, refreshUser } = useAuth();
   const { colors } = useTheme();
   const navigation = useNavigation<any>();
+
+  // Iniciar e registar push notifications
+  usePushNotifications();
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
@@ -102,6 +106,7 @@ const HomeScreen: React.FC = () => {
             </View>
           </View>
           <TouchableOpacity
+            onPress={() => navigation.navigate('Notifications')}
             style={[
               styles.notificationButton,
               { backgroundColor: colors.card, borderColor: colors.border },
@@ -162,7 +167,7 @@ const HomeScreen: React.FC = () => {
               key={tx.id}
               transaction={tx}
               currentUserId={user?.id || 0}
-              onPress={() => navigation.navigate('TransactionDetail', { transactionId: tx.id })}
+              onPress={() => navigation.navigate('TransactionDetail', { transaction: tx })}
             />
           ))
         )}

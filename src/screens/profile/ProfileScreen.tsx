@@ -51,7 +51,7 @@ const ProfileScreen: React.FC = () => {
       iconColor: colors.textSecondary,
       iconBg: isDark ? colors.card : '#f1f5f9',
       label: 'Segurança',
-      onPress: () => {},
+      onPress: () => Alert.alert('Segurança', 'Funcionalidade de segurança em desenvolvimento.'),
     },
     {
       key: 'help',
@@ -59,7 +59,7 @@ const ProfileScreen: React.FC = () => {
       iconColor: colors.textSecondary,
       iconBg: isDark ? colors.card : '#f1f5f9',
       label: 'Ajuda & Suporte',
-      onPress: () => {},
+      onPress: () => Alert.alert('Ajuda', 'Centro de ajuda em desenvolvimento.'),
     },
   ];
 

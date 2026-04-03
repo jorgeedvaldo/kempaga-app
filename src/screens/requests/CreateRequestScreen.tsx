@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme, fontFamily, fontSize, spacing, borderRadius } from '@/theme';
 import { userService } from '@/services/userService';
@@ -32,6 +33,7 @@ const CreateRequestScreen: React.FC = () => {
   const { user } = useAuth();
   const { colors } = useTheme();
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
 
   const [step, setStep] = useState<'search' | 'amount'>('search');
   const [query, setQuery] = useState('');
@@ -92,7 +94,7 @@ const CreateRequestScreen: React.FC = () => {
   return (
     <View style={[styles.screen, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <View style={[styles.header, { borderColor: colors.border }]}>
+      <View style={[styles.header, { borderColor: colors.border, paddingTop: Math.max(insets.top, spacing['5xl']) }]}>
         <TouchableOpacity
           onPress={() => {
             if (step === 'search') navigation.goBack();
