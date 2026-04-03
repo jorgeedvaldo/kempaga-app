@@ -32,9 +32,7 @@
         "USE_FINGERPRINT"
       ]
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
+
     "plugins": [
       "expo-font",
       [
