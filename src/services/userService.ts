@@ -25,11 +25,14 @@ export const userService = {
   /**
    * Atualizar perfil do utilizador autenticado
    */
-  async updateProfile(formData: FormData): Promise<{ message: string; user: User }> {
-    const { data } = await api.put('/users/profile', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    return data;
+  async updateProfile(data: {
+    first_name?: string;
+    last_name?: string;
+    phone?: string;
+    bi_number?: string;
+  }): Promise<{ message: string; user: User }> {
+    const response = await api.put('/users/profile', data);
+    return response.data;
   },
 
   /**

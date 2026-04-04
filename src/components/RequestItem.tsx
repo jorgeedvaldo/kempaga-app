@@ -1,9 +1,9 @@
 /**
- * RequestItem — Linha de pedido de dinheiro com ações
+ * RequestItem — Linha de pedido de dinheiro (apenas exibição, ações na página de detalhes)
  */
 
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme, fontFamily, fontSize, spacing, borderRadius } from '@/theme';
 import { formatCurrency, formatDate } from '@/utils/helpers';
@@ -14,18 +14,12 @@ interface RequestItemProps {
   request: MoneyRequest;
   currentUserId: number;
   onPress?: () => void;
-  onReject?: () => void;
-  onCancel?: () => void;
-  loading?: boolean;
 }
 
 const RequestItem: React.FC<RequestItemProps> = ({
   request,
   currentUserId,
   onPress,
-  onReject,
-  onCancel,
-  loading = false,
 }) => {
   const { colors } = useTheme();
 
@@ -58,6 +52,13 @@ const RequestItem: React.FC<RequestItemProps> = ({
     }
   };
 
+  const getDirectionLabel = () => {
+    if (iAmReceiver) {
+      return 'Pedido recebido';
+    }
+    return 'Pedido enviado';
+  };
+
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -85,7 +86,7 @@ const RequestItem: React.FC<RequestItemProps> = ({
             <Text
               style={[styles.date, { color: colors.textMuted, fontFamily: fontFamily.regular }]}
             >
-              {formatDate(request.created_at)}
+              {formatDate(request.created_at)} · {getDirectionLabel()}
             </Text>
           </View>
         </View>
@@ -102,47 +103,24 @@ const RequestItem: React.FC<RequestItemProps> = ({
         </View>
       </View>
 
-      {request.note && (
+      {request.note ? (
         <Text
           style={[styles.note, { color: colors.textMuted, fontFamily: fontFamily.regular }]}
           numberOfLines={2}
         >
           "{request.note}"
         </Text>
-      )}
+      ) : null}
 
-      {/* Ações para pedidos pendentes */}
-      {isPending && (
-        <View style={styles.actions}>
-          {loading ? (
-            <ActivityIndicator size="small" color={colors.brandPurple} />
-          ) : iAmReceiver ? (
-            // Eu sou quem deve pagar — posso rejeitar localmente, ou clicar no pedido para aceitar
-            <TouchableOpacity
-              style={[styles.actionButton, styles.rejectButton, { borderColor: colors.danger }]}
-              onPress={onReject}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="close" size={16} color={colors.danger} />
-              <Text style={[styles.actionText, { color: colors.danger, fontFamily: fontFamily.semiBold }]}>
-                Rejeitar
-              </Text>
-            </TouchableOpacity>
-          ) : (
-            // Eu sou quem pediu — posso cancelar
-            <TouchableOpacity
-              style={[styles.actionButton, styles.cancelButton, { borderColor: colors.textMuted }]}
-              onPress={onCancel}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="close-circle-outline" size={16} color={colors.textMuted} />
-              <Text style={[styles.actionText, { color: colors.textMuted, fontFamily: fontFamily.semiBold }]}>
-                Cancelar Pedido
-              </Text>
-            </TouchableOpacity>
-          )}
+      {/* Botão Ver Detalhes */}
+      <View style={[styles.footer, { borderTopColor: colors.border }]}>
+        <View style={styles.detailsLink}>
+          <Text style={[styles.detailsText, { color: colors.brandPurple, fontFamily: fontFamily.semiBold }]}>
+            Ver Detalhes
+          </Text>
+          <Ionicons name="chevron-forward" size={16} color={colors.brandPurple} />
         </View>
-      )}
+      </View>
     </TouchableOpacity>
   );
 };
@@ -195,31 +173,18 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     marginTop: spacing.md,
   },
-  actions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    gap: spacing.md,
-    marginTop: spacing.lg,
+  footer: {
+    marginTop: spacing.md,
     paddingTop: spacing.md,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(0,0,0,0.05)',
+    alignItems: 'flex-end',
   },
-  actionButton: {
+  detailsLink: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.xs,
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.lg,
-    borderRadius: borderRadius.md,
   },
-  acceptButton: {},
-  rejectButton: {
-    borderWidth: 1,
-  },
-  cancelButton: {
-    borderWidth: 1,
-  },
-  actionText: {
+  detailsText: {
     fontSize: fontSize.sm,
   },
 });

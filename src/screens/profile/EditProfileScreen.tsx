@@ -77,13 +77,12 @@ const EditProfileScreen: React.FC = () => {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const formData = new FormData();
-      formData.append('first_name', firstName.trim());
-      formData.append('last_name', lastName.trim());
-      formData.append('phone', phone.trim());
-      formData.append('bi_number', biNumber.trim());
-
-      await userService.updateProfile(formData);
+      await userService.updateProfile({
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
+        phone: phone.trim(),
+        bi_number: biNumber.trim(),
+      });
       await refreshUser();
       Alert.alert('Sucesso', 'Perfil atualizado com sucesso!', [
         { text: 'OK', onPress: () => navigation.goBack() },

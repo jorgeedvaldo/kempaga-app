@@ -85,7 +85,11 @@ const HomeScreen: React.FC = () => {
       >
         {/* Header: Avatar + Saudação + Notificações */}
         <View style={styles.header}>
-          <View style={styles.userInfo}>
+          <TouchableOpacity 
+            style={styles.userInfo}
+            onPress={() => navigation.navigate('ProfileTab')}
+            activeOpacity={0.7}
+          >
             <Avatar
               imageUrl={user?.image_url}
               name={user?.full_name || 'User'}
@@ -104,7 +108,7 @@ const HomeScreen: React.FC = () => {
                 {user?.first_name || 'Utilizador'}
               </Text>
             </View>
-          </View>
+          </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate('Notifications')}
             style={[
