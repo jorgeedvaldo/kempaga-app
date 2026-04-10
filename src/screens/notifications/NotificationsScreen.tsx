@@ -37,12 +37,35 @@ const NotificationsScreen: React.FC = () => {
       try {
         setError(null);
         const response = await notificationService.getNotifications(pageNum);
-        if (pageNum === 1 || isRefresh) {
-          setNotifications(response.data);
-        } else {
-          setNotifications((prev) => [...prev, ...response.data]);
+        
+        let items = [];
+        let rLastPage = 1;
+
+        if (Array.isArray(response)) {
+          items = response;
+        } else if (response && Array.isArray(response.data)) {
+          items = response.data;
+          rLastPage = response.last_page || 1;
         }
-        setLastPage(response.last_page);
+
+        // Tentar formatar a data caso o backend a devolva como string (falta de cast no Model)
+        items = items.map((item: any) => {
+          if (typeof item.data === 'string') {
+            try {
+              item.data = JSON.parse(item.data);
+            } catch (e) {
+              item.data = {};
+            }
+          }
+          return item;
+        });
+
+        if (pageNum === 1 || isRefresh) {
+          setNotifications(items);
+        } else {
+          setNotifications((prev) => [...prev, ...items]);
+        }
+        setLastPage(rLastPage);
         setPage(pageNum);
       } catch (err: any) {
         // Se a API retorna 404 ou não tem endpoint de notificações,
@@ -163,6 +186,15 @@ const NotificationsScreen: React.FC = () => {
             } catch (err) {
               // Silêncio — não bloquear UI
             }
+          }
+          
+          // Navegação consoante o tipo/dados da notificação
+          const typeStr = (item.data.type || item.type || '').toLowerCase();
+          
+          if (item.data.transaction_id || typeStr.includes('transfer') || typeStr.includes('payment')) {
+            (navigation as any).navigate('TransactionsTab');
+          } else if (item.data.money_request_id || typeStr.includes('request') || typeStr.includes('accept') || typeStr.includes('reject')) {
+            (navigation as any).navigate('RequestsTab');
           }
         }}
       >

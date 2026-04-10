@@ -28,11 +28,13 @@
       },
       "edgeToEdgeEnabled": true,
       "permissions": [
-        "USE_BIOMETRIC",
-        "USE_FINGERPRINT"
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT",
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT",
+        "android.permission.RECORD_AUDIO"
       ]
     },
-
     "plugins": [
       "expo-font",
       [
@@ -47,6 +49,11 @@
           "photosPermission": "Selecione uma foto para o seu perfil"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "daa567f9-b389-41b6-b7fc-7a82800a0f87"
+      }
+    }
   }
 }
