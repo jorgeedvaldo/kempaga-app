@@ -10,6 +10,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme, fontFamily, fontSize, spacing } from '@/theme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // Tab Screens
 import HomeScreen from '@/screens/home/HomeScreen';
@@ -51,6 +52,7 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 // ========== TAB NAVIGATOR ==========
 const TabNavigator: React.FC = () => {
   const { colors, isDark } = useTheme();
+  const insets = useSafeAreaInsets();
 
   return (
     <Tab.Navigator
@@ -60,8 +62,8 @@ const TabNavigator: React.FC = () => {
           backgroundColor: isDark ? 'rgba(21, 17, 31, 0.95)' : 'rgba(255, 255, 255, 0.95)',
           borderTopColor: isDark ? 'rgba(55, 65, 81, 0.5)' : '#e2e8f0',
           borderTopWidth: 1,
-          height: Platform.OS === 'ios' ? 88 : 70,
-          paddingBottom: Platform.OS === 'ios' ? 28 : 12,
+          height: Platform.OS === 'ios' ? 88 : 60 + insets.bottom,
+          paddingBottom: Platform.OS === 'ios' ? 28 : Math.max(insets.bottom, 12),
           paddingTop: 8,
           position: 'absolute',
           bottom: 0,

@@ -68,7 +68,7 @@ const TransactionDetailScreen: React.FC = () => {
         <View style={{ width: 24 }} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={[styles.content, { paddingBottom: Math.max(insets.bottom, spacing['6xl']) }]} showsVerticalScrollIndicator={false}>
         {/* Ícone de status */}
         <View style={styles.statusSection}>
           <View style={[styles.statusIconContainer, { backgroundColor: status.color + '20' }]}>

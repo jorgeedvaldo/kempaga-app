@@ -180,7 +180,7 @@ const SendMoneyScreen: React.FC = () => {
   const renderAmountStep = () => (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.amountContainer}
+      style={[styles.amountContainer, { paddingBottom: Math.max(insets.bottom, spacing['2xl']) }]}
     >
       {/* Destinatário selecionado */}
       {selectedUser && (
@@ -241,7 +241,7 @@ const SendMoneyScreen: React.FC = () => {
   );
 
   const renderConfirmStep = () => (
-    <View style={styles.confirmContainer}>
+    <View style={[styles.confirmContainer, { paddingBottom: Math.max(insets.bottom, spacing['2xl']) }]}>
       <View style={[styles.confirmCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <Text style={[styles.confirmLabel, { color: colors.textMuted, fontFamily: fontFamily.medium }]}>
           Enviar para

@@ -277,7 +277,7 @@ const NotificationsScreen: React.FC = () => {
           data={notifications}
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderNotification}
-          contentContainerStyle={styles.list}
+          contentContainerStyle={[styles.list, { paddingBottom: Math.max(insets.bottom, spacing['6xl']) }]}
           showsVerticalScrollIndicator={false}
           onEndReached={loadMore}
           onEndReachedThreshold={0.3}

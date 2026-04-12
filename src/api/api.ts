@@ -10,7 +10,7 @@ import { BASE_URL } from '@env';
 const TOKEN_KEY = '@kempaga_token';
 
 const api = axios.create({
-  baseURL: BASE_URL,
+  baseURL: 'https://kempaga.toolpdf.org/api',
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',

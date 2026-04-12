@@ -157,7 +157,7 @@ const CreateRequestScreen: React.FC = () => {
       ) : (
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.amountContainer}
+          style={[styles.amountContainer, { paddingBottom: Math.max(insets.bottom, spacing['2xl']) }]}
         >
           {selectedUser && (
             <View style={styles.selectedUser}>

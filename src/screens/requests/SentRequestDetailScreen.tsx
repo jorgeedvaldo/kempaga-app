@@ -93,7 +93,7 @@ const SentRequestDetailScreen: React.FC = () => {
         <View style={{ width: 24 }} />
       </View>
 
-      <View style={styles.content}>
+      <View style={[styles.content, { paddingBottom: Math.max(insets.bottom, spacing['2xl']) }]}>
         <View style={styles.card}>
           <Text style={[styles.headerSubtitle, { color: colors.textMuted, fontFamily: fontFamily.medium }]}>
             Informações do Destinatário
